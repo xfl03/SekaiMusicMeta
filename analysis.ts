@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
-import {eventPoint, levelWeight,} from "./modules/ScoreHelper";
+import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
 import {musicName} from "./modules/MusicHelper";
 
 const CENTER_SKILL = 80;
@@ -8,8 +8,9 @@ const OTHER_SKILL = [60, 40, 50, 40];
 const UNIT_SUM = 142840;
 const EVENT_UP_RATE = 190;
 
-const LIVE_GAP_TIME = 20;
-const DISPLAY_ITEMS = 10;
+const LIVE_GAP_TIME_SOLO = 15;
+const LIVE_GAP_TIME_MULTI = 30;
+const DISPLAY_ITEMS = 1;
 
 //Read metas
 let metaStr = fs.readFileSync("metas.json", "utf8");
@@ -58,42 +59,14 @@ metaObj.forEach(meta => {
 fs.writeFileSync("scores.json", JSON.stringify(scores), {encoding: 'utf8', flag: 'w'});
 
 //Output top score
-if (scores.length >= DISPLAY_ITEMS) {
-    console.log("TOP SOLO SCORE")
-    scores.sort((a, b) => b.solo_score - a.solo_score);
-    for (let i = 0; i < DISPLAY_ITEMS; ++i) {
-        let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " Solo:" + score.solo_score);
-    }
+displayScores(scores, s => s.solo_score, true, "TOP SOLO SCORE", DISPLAY_ITEMS);
+displayScores(scores, s => s.multi_score, true, "TOP MULTI SCORE", DISPLAY_ITEMS);
 
-    console.log("\nTOP MULTI SCORE")
-    scores.sort((a, b) => b.multi_score - a.multi_score);
-    for (let i = 0; i < DISPLAY_ITEMS; ++i) {
-        let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " Multi:" + score.multi_score);
-    }
+displayScores(scores, s => s.solo_event_pt, true, "TOP SOLO EVENT", DISPLAY_ITEMS);
+displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO), true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
 
-    console.log("\nTOP SOLO EVENT")
-    scores.sort((a, b) => b.solo_event_pt - a.solo_event_pt);
-    for (let i = 0; i < DISPLAY_ITEMS * 2; ++i) {
-        let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " SoloEvent:" + score.solo_event_pt);
-    }
-
-    console.log("\nTOP MULTI EVENT")
-    scores.sort((a, b) => -b.multi_event_pt + a.multi_event_pt);
-    for (let i = 0; i < DISPLAY_ITEMS * 2; ++i) {
-        let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " MultiEvent:" + score.multi_event_pt);
-    }
-
-    console.log("\nTOP MULTI EVENT SPEED")
-    scores.sort((a, b) => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME) - a.multi_event_pt / (a.music_time + LIVE_GAP_TIME));
-    for (let i = 0; i < DISPLAY_ITEMS * 2; ++i) {
-        let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " MultiEvent:" + score.multi_event_pt + " Time:" + score.music_time);
-    }
-}
+displayScores(scores, s => s.multi_event_pt, true, "TOP MULTI EVENT", DISPLAY_ITEMS);
+displayScores(scores, b => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME_MULTI), true, "TOP MULTI EVENT SPEED", DISPLAY_ITEMS);
 
 //Output Average Score
 let sum = {

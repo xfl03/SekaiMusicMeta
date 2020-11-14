@@ -20,6 +20,7 @@ scoreObj.forEach(score => {
     //Basic info
     let typeWeightSum = 0;
     let basicScore = 0;
+
     //Skill info
     let isSkill = false;
     let skillNum = 0;

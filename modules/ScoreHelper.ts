@@ -1,3 +1,6 @@
+import {MusicScoreResult} from "./MusicMetaInterface";
+import {musicName} from "./MusicHelper";
+
 export const noteWeight: Record<string, number> = {
     "Normal": 10,
     "Long Start": 10,
@@ -27,4 +30,19 @@ export function levelWeight(level: number): number {
 
 export function eventPoint(score: number, other: number, rate: number, unitRate: number) {
     return Math.floor((100 + Math.floor(score / 20000) + Math.min(7, other / 400000)) * rate / 100 * (100 + unitRate) / 100);
+}
+
+export function displayScores(
+    scores: MusicScoreResult[],
+    sortItem: (s: MusicScoreResult) => number, sortOrder: boolean,
+    displayTitle: string, displayNum: number
+) {
+    scores.sort((a, b) => sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b));
+
+    console.log(displayTitle);
+    for (let i = 0; i < Math.min(displayNum, scores.length); ++i) {
+        let score = scores[i];
+        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " " + sortItem(score));
+    }
+    console.log();
 }
