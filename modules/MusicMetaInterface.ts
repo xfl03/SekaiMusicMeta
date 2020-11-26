@@ -2,6 +2,7 @@ export interface MusicMeta {
     music_id:number,
     difficulty:string,
     level:number,
+    combo:number,
     music_time:number,
     event_rate:number,
 

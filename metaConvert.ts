@@ -13,7 +13,7 @@ let metas: MusicMeta[] = [];
 scoreObj.forEach(score => {
     //Skip illegal score
     if (score.skill_notes.length != 6 || score.prepare_notes.length != 2 || score.note_count != score.playable_notes.length) {
-        console.log("!SKIPPED: " + score.music_id + " " + score.music_difficulty)
+        console.log("!SKIPPED: " + musicName[score.music_id] + " " + score.music_difficulty)
         return
     }
 
@@ -103,14 +103,16 @@ scoreObj.forEach(score => {
         music_id: score.music_id,
         difficulty: score.music_difficulty,
         level: score.play_level,
+        combo: score.note_count,
         music_time: musicTime[score.music_id],
         event_rate: eventMusicRate[score.music_id],
+
         base_score: basicScore,
         skill_score_solo: skillScoresSolo,
         skill_score_multi: skillScoresMulti,
         fever_score: feverScore
     } as MusicMeta)
-    console.log("Processed: " + musicName[score.music_id] + " " + score.music_difficulty)
+    console.log("Processed: " + score.music_id + " " +  musicName[score.music_id] + " " + score.music_difficulty)
 })
 
 //Write to file

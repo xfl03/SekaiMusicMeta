@@ -3,14 +3,14 @@ import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
 import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
 import {musicName} from "./modules/MusicHelper";
 
-const CENTER_SKILL = 80;
-const OTHER_SKILL = [60, 40, 50, 40];
-const UNIT_SUM = 142840;
+const CENTER_SKILL = 100;
+const OTHER_SKILL = [50,50,50,50,30];
+const UNIT_SUM = 149067;
 const EVENT_UP_RATE = 190;
 
 const LIVE_GAP_TIME_SOLO = 15;
 const LIVE_GAP_TIME_MULTI = 30;
-const DISPLAY_ITEMS = 1;
+const DISPLAY_ITEMS = 10;
 
 //Read metas
 let metaStr = fs.readFileSync("metas.json", "utf8");
@@ -27,6 +27,9 @@ let soloSkillCount = OTHER_SKILL.length + 1;
 let soloCenterSkillWeight = CENTER_SKILL / 100;
 let soloAverageSkillWeight = (otherAverage * (soloSkillCount - 1) + CENTER_SKILL) / 100 / soloSkillCount;
 let multiSkillWeight = (1 + CENTER_SKILL / 100) * Math.pow(1 + otherAverage / 500, 4) - 1;
+
+//console.log(soloCenterSkillWeight);
+//console.log(soloAverageSkillWeight);
 
 //Process metas
 let scores: MusicScoreResult[] = [];
@@ -90,3 +93,10 @@ scores.forEach(it => {
 ["easy", "normal", "hard", "expert", "master"].forEach(it => {
     console.log(it + " multi event pt average:" + sum[it] / count[it]);
 })
+console.log()
+
+//Output Max Combo
+metaObj
+    .filter(it => it.combo >= 1500)
+    .sort((a, b) => b.combo - a.combo)
+    .forEach(it => console.log(it.combo + " " + musicName[it.music_id] + " " + it.difficulty));
