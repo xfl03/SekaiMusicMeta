@@ -5,7 +5,7 @@ import {MusicMeta} from "./modules/MusicMetaInterface";
 import {eventMusicRate, musicName, musicTime} from "./modules/MusicHelper";
 
 //Read all scores
-let scoreStr = fs.readFileSync("all_scores.json", "utf8");
+let scoreStr = fs.readFileSync("scores.json", "utf8");
 let scoreObj = JSON.parse(scoreStr) as MusicScore[];
 
 //Process scores

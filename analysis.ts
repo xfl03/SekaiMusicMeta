@@ -3,9 +3,9 @@ import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
 import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
 import {musicName} from "./modules/MusicHelper";
 
-const CENTER_SKILL = 100;
-const OTHER_SKILL = [50,50,50,50,30];
-const UNIT_SUM = 149067;
+const CENTER_SKILL = 80;
+const OTHER_SKILL = [80,60,40,50,40];
+const UNIT_SUM = 142840;
 const EVENT_UP_RATE = 190;
 
 const LIVE_GAP_TIME_SOLO = 15;
@@ -40,7 +40,7 @@ metaObj.forEach(meta => {
         soloScore += i * (index == 5 ? soloCenterSkillWeight : (index >= soloSkillCount ? 0 : soloAverageSkillWeight));
     });
     soloScore *= UNIT_SUM * 4;
-    let multiScore = meta.base_score + meta.fever_score * 0.5 + 0.05 * levelWeight(meta.level);
+    let multiScore = meta.base_score + meta.fever_score * 0.5 //+ 0.05 * levelWeight(meta.level);
     meta.skill_score_multi.forEach(i => {
         multiScore += i * multiSkillWeight;
     });
@@ -59,17 +59,17 @@ metaObj.forEach(meta => {
 })
 
 //Write to file
-fs.writeFileSync("scores.json", JSON.stringify(scores), {encoding: 'utf8', flag: 'w'});
+fs.writeFileSync("scores_out.json", JSON.stringify(scores), {encoding: 'utf8', flag: 'w'});
 
 //Output top score
 displayScores(scores, s => s.solo_score, true, "TOP SOLO SCORE", DISPLAY_ITEMS);
 displayScores(scores, s => s.multi_score, true, "TOP MULTI SCORE", DISPLAY_ITEMS);
 
 displayScores(scores, s => s.solo_event_pt, true, "TOP SOLO EVENT", DISPLAY_ITEMS);
-displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO), true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
+displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO) * 3600, true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
 
 displayScores(scores, s => s.multi_event_pt, true, "TOP MULTI EVENT", DISPLAY_ITEMS);
-displayScores(scores, b => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME_MULTI), true, "TOP MULTI EVENT SPEED", DISPLAY_ITEMS);
+displayScores(scores, b => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME_MULTI) * 3600, true, "TOP MULTI EVENT SPEED", DISPLAY_ITEMS);
 
 //Output Average Score
 let sum = {
