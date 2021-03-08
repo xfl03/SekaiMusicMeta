@@ -1,5 +1,5 @@
 import {MusicScoreResult} from "./MusicMetaInterface";
-import {musicName} from "./MusicHelper";
+import {getMusicTitle, musicName} from "./MusicHelper";
 
 export const noteWeight: Record<string, number> = {
     "Normal": 10,
@@ -42,7 +42,7 @@ export function displayScores(
     console.log(displayTitle);
     for (let i = 0; i < Math.min(displayNum, scores.length); ++i) {
         let score = scores[i];
-        console.log("#" + (i + 1) + " " + musicName[score.music_id] + " " + score.difficulty + " Level:" + score.level + " " + sortItem(score) + " " + score.multi_event_pt);
+        console.log("#" + (i + 1) + " " + getMusicTitle(score.music_id) + " " + score.difficulty + " Level:" + score.level + " " + sortItem(score) + " " + score.multi_event_pt);
     }
     console.log();
 }

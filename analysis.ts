@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
 import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
-import {musicName} from "./modules/MusicHelper";
+import {getMusicTitle, musicName} from "./modules/MusicHelper";
 
 const CENTER_SKILL = 80;
 const OTHER_SKILL = [80,60,40,50,40];
@@ -99,4 +99,4 @@ console.log()
 metaObj
     .filter(it => it.combo >= 1500)
     .sort((a, b) => b.combo - a.combo)
-    .forEach(it => console.log(it.combo + " " + musicName[it.music_id] + " " + it.difficulty));
+    .forEach(it => console.log(it.combo + " " + getMusicTitle(it.music_id) + " " + it.difficulty));

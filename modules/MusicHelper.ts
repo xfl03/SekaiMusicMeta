@@ -1,3 +1,18 @@
+import * as fs from "fs";
+import * as mm from "music-metadata";
+import {MusicData, MusicVocalData} from "./MusicDataInterface";
+
+//Please change these path before use
+const masterDataPath = "../sekai-master-db-diff/";
+const musicAssetPath = "../assets/music/long/"
+
+const musicData = JSON.parse(fs.readFileSync(masterDataPath + "musics.json", "utf8")) as MusicData[];
+const musicVocalData = JSON.parse(fs.readFileSync(masterDataPath + "musicVocals.json", "utf8")) as MusicVocalData[];
+
+function getMusicData(id: number) {
+    return musicData.filter(it => it.id === id)[0];
+}
+
 export const musicName: Record<number, string> = {
     1: "Tell Your World",
     2: "ロキ",
@@ -55,6 +70,10 @@ export const musicName: Record<number, string> = {
     113: "ローリンガール",
     114: "裏表ラバーズ",
     115: "アンノウン・マザーグース",
+}
+
+export function getMusicTitle(id: number) {
+    return getMusicData(id).title;
 }
 
 export const musicTime: Record<number, number> = {
@@ -116,6 +135,32 @@ export const musicTime: Record<number, number> = {
     115: 136.7,
 }
 
+const musicTimeCache = new Map<number, number>()
+
+export async function initMusicTime(id:number) {
+    let music = getMusicData(id);
+    let vocal = musicVocalData.filter(it => it.musicId === id)[0];
+
+    let meta = await mm.parseFile(`${musicAssetPath}/${vocal.assetbundleName}_rip/${vocal.assetbundleName}.mp3`);
+    let time = Math.round((meta.format.duration - music.fillerSec) * 10) / 10;
+    musicTimeCache.set(id, time);
+}
+
+export async function initAllMusicTime() {
+    let musics = musicData.filter(it=>musicTime[it.id]===undefined);
+    for(let music of musics) {
+        await initMusicTime(music.id);
+    }
+}
+
+export function getMusicTime(id: number) {
+    if (musicTime[id] !== undefined) return musicTime[id];
+    if (musicTimeCache.has(id)) return musicTimeCache.get(id);
+
+    console.log(`Cannot read music time:${id}`)
+    return undefined;
+}
+
 export const eventMusicRate: Record<number, number> = {
     1: 114,
     2: 109,
@@ -169,8 +214,11 @@ export const eventMusicRate: Record<number, number> = {
     86: 116,
     92: 110, //乙女解剖
     93: 113,
-    99: 114, //Not Sure Yet
-    113: 113, //Not Sure Yet
-    114: 107, //Not Sure Yet
-    115: 118, //Not Sure Yet
+}
+
+export function getMusicEventRate(id: number) {
+    if (eventMusicRate[id] !== undefined) return eventMusicRate[id];
+
+    let time = getMusicTime(id);
+    return Math.floor(time / 3.6) + 80;
 }
