@@ -41,6 +41,8 @@ function main() {
         });
         let skillScoresSolo = [0, 0, 0, 0, 0, 0];
         let skillScoresMulti = [0, 0, 0, 0, 0, 0];
+        let skillNotes = [0, 0, 0, 0, 0, 0];
+        //let skillLongMidNotes = [0, 0, 0, 0, 0, 0];
 
         //Fever info
         let isFever = false;
@@ -94,6 +96,11 @@ function main() {
             if (isSkill) {
                 skillScoresSolo[skillNum - 1] += noteWeight;
                 skillScoresMulti[skillNum - 1] += isFever ? noteWeight * 1.5 : noteWeight;
+                skillNotes[skillNum - 1] ++;
+                /*
+                if(note.note_class.startsWith("Long Mid") || note.note_class.startsWith("Long Auto")) {
+                    skillLongMidNotes[skillNum - 1]++;
+                }*/
             }
             if (isFever) {
                 feverScore += noteWeight;
@@ -117,13 +124,16 @@ function main() {
             base_score: basicScore,
             skill_score_solo: skillScoresSolo,
             skill_score_multi: skillScoresMulti,
+            skill_note_count:skillNotes,
+            //skill_long_mid_count:skillLongMidNotes,
             fever_score: feverScore
         } as MusicMeta)
         console.log("Processed: " + score.music_id + " " + getMusicTitle(score.music_id) + " " + score.music_difficulty)
     })
 
     //Write to file
-    fs.writeFileSync("metas.json", JSON.stringify(metas), {encoding: 'utf8', flag: 'w'});
+    fs.writeFileSync("metas.json", JSON.stringify(metas, null, 2), {encoding: 'utf8', flag: 'w'});
+    fs.writeFileSync("music_metas.json", JSON.stringify(metas), {encoding: 'utf8', flag: 'w'});
 }
 
 initAllMusicTime().then(()=>main())
