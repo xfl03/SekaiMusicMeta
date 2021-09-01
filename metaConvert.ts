@@ -7,7 +7,6 @@ import {
     getMusicEventRate,
     getMusicTime, getMusicTitle,
     initAllMusicTime,
-    musicName,
     musicTime
 } from "./modules/MusicHelper";
 
@@ -20,7 +19,7 @@ function main() {
     scoreObj.forEach(score => {
         //Skip illegal score
         if (score.skill_notes.length != 6 || score.prepare_notes.length != 2 || score.note_count != score.playable_notes.length) {
-            console.log("!SKIPPED: " + musicName[score.music_id] + " " + score.music_difficulty)
+            console.log("!SKIPPED: " + getMusicTitle(score.music_id) + " " + score.music_difficulty)
             return
         }
 
@@ -85,6 +84,7 @@ function main() {
                     //Fever start
                     isFever = true;
                     hasFevered = true;
+                    feverNoteCount = 1;
                 }
             }
             //Record score info

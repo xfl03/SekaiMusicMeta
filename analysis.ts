@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
 import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
-import {getMusicTitle, musicName} from "./modules/MusicHelper";
+import {getMusicTitle} from "./modules/MusicHelper";
 
 const CENTER_SKILL = 80;
 const OTHER_SKILL = [80,60,40,50,40];
@@ -40,11 +40,12 @@ metaObj.forEach(meta => {
         soloScore += i * (index == 5 ? soloCenterSkillWeight : (index >= soloSkillCount ? 0 : soloAverageSkillWeight));
     });
     soloScore *= UNIT_SUM * 4;
-    let multiScore = meta.base_score + meta.fever_score * 0.5 //+ 0.05 * levelWeight(meta.level);
+    let multiScore = meta.base_score + meta.fever_score * 0.5;
     meta.skill_score_multi.forEach(i => {
         multiScore += i * multiSkillWeight;
     });
     multiScore *= UNIT_SUM * 4;
+    multiScore += Math.floor(UNIT_SUM * 5 * 0.015 * 5);//Praise Score (5 times)
     //Save score
     scores.push({
         music_id: meta.music_id,
@@ -94,9 +95,3 @@ scores.forEach(it => {
     console.log(it + " multi event pt average:" + sum[it] / count[it]);
 })
 console.log()
-
-//Output Max Combo
-metaObj
-    .filter(it => it.combo >= 1500)
-    .sort((a, b) => b.combo - a.combo)
-    .forEach(it => console.log(it.combo + " " + getMusicTitle(it.music_id) + " " + it.difficulty));

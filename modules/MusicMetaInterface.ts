@@ -9,6 +9,7 @@ export interface MusicMeta {
     base_score:number,
     skill_score_solo:number[],
     skill_score_multi:number[],
+    skill_note_count:number[],
     fever_score:number
 }
 

@@ -2,74 +2,16 @@ import * as fs from "fs";
 import * as mm from "music-metadata";
 import {MusicData, MusicVocalData} from "./MusicDataInterface";
 
+
 //Please change these path before use
-const masterDataPath = "../sekai-master-db-diff/";
-const musicAssetPath = "../assets/music/long/"
+const masterDataPath = "";
+const musicAssetPath = ""
 
 const musicData = JSON.parse(fs.readFileSync(masterDataPath + "musics.json", "utf8")) as MusicData[];
 const musicVocalData = JSON.parse(fs.readFileSync(masterDataPath + "musicVocals.json", "utf8")) as MusicVocalData[];
 
 function getMusicData(id: number) {
     return musicData.filter(it => it.id === id)[0];
-}
-
-export const musicName: Record<number, string> = {
-    1: "Tell Your World",
-    2: "ロキ",
-    3: "テオ",
-    6: "ヒバナ -Reloaded-",
-    10: "ハッピーシンセサイザ",
-    11: "ビバハピ",
-    13: "Nostalogic",
-    18: "アスノヨゾラ哨戒班",
-    19: "シャルル",
-    21: "脱法ロック",
-    22: "命に嫌われている",
-    26: "劣等上等",
-    27: "Just Be Friends",
-    28: "ドクター=ファンクビート",
-    36: "ミラクルペイント",
-    38: "ブリキノダンス",
-    41: "スイートマジック",
-    43: "ネクストネスト",
-    44: "Hand in Hand",
-    45: "39みゅーじっく！",
-    47: "メルト",
-    48: "ワールドイズマイン",
-    49: "初音ミクの消失",
-    50: "Blessing",
-    51: "セカイはまだ始まってすらいない",
-    52: "potatoになっていく",
-    54: "Ready Steady",
-    57: "アイドル新鋭隊",
-    60: "悔やむと書いてミライ",
-    61: "携帯恋話",
-    62: "ジャックポットサッドガール",
-    63: "needLe",
-    64: "ステラ",
-    66: "ハロ／ハワユ",
-    67: "自傷無色",
-    68: "ダンスロボットダンス",
-    69: "フラジール",
-    70: "メルティランドナイトメア",
-    71: "ツギハギスタッカート",
-    73: "ニア",
-    74: "独りんぼエンヴィー",
-    76: "セカイ",
-    77: "ワーワーワールド",
-    78: "ぼうけんのしょがきえました！",
-    81: "夜咄ディセイブ",
-    82: "alive",
-    83: "Gimme×Gimme",
-    84: "ジャンキーナイトタウンオーケストラ",
-    85: "Leia - Remind",
-    86: "on the rocks",
-    92: "乙女解剖",
-    93: "青く駆けろ！",
-    99: "モア！ジャンプ！モア！",
-    113: "ローリンガール",
-    114: "裏表ラバーズ",
-    115: "アンノウン・マザーグース",
 }
 
 export function getMusicTitle(id: number) {
@@ -182,12 +124,13 @@ export const eventMusicRate: Record<number, number> = {
     43: 115,
     44: 114,
     45: 113,
-    47: 130,
+    46: 114, //グリーンライツ・セレナーデ 2021.04.01 Tested
+    47: 130, //メルト
     48: 128,
     49: 119,
     50: 116,
     51: 113,
-    52: 109,//potatoになっていく
+    52: 109, //potatoになっていく
     54: 105,
     57: 110,
     60: 107,
@@ -199,10 +142,10 @@ export const eventMusicRate: Record<number, number> = {
     67: 108,
     68: 108,
     69: 114,
-    70: 111,//メルティランドナイトメア
+    70: 111, //メルティランドナイトメア
     71: 113,
     73: 112,
-    74: 100,//独りんぼエンヴィー
+    74: 100, //独りんぼエンヴィー
     76: 110,
     77: 110,
     78: 110,
@@ -212,8 +155,13 @@ export const eventMusicRate: Record<number, number> = {
     84: 118,
     85: 116,
     86: 116,
+    87: 116, //恋愛裁判 2021.04.02 Tested
     92: 110, //乙女解剖
     93: 113,
+    103: 113, //ニジイロストーリーズ 2021.04.01 Tested
+    110: 114, //千本桜 2021.04.02 Tested
+    115: 118, //アンノウン・マザーグース 2021.04.02 Tested
+    122: 112, //ポジティブ☆ダンスタイム 2021.04.02 Tested
 }
 
 export function getMusicEventRate(id: number) {

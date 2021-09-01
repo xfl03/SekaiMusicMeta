@@ -1,5 +1,5 @@
 import {MusicScoreResult} from "./MusicMetaInterface";
-import {getMusicTitle, musicName} from "./MusicHelper";
+import {getMusicTitle} from "./MusicHelper";
 
 export const noteWeight: Record<string, number> = {
     "Normal": 10,
@@ -21,7 +21,7 @@ export const noteWeight: Record<string, number> = {
 }
 
 export function comboWeight(combo: number): number {
-    return 1 + Math.min(10, Math.floor((combo - 1) / 100)) / 100;
+    return 1 + Math.min(10, Math.floor((combo - 2) / 100)) / 100;
 }
 
 export function levelWeight(level: number): number {
