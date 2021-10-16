@@ -1,16 +1,18 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
-import {displayScores, eventPoint, levelWeight,} from "./modules/ScoreHelper";
+import {displayScores, eventPoint, levelWeight, paretoOptimality,} from "./modules/ScoreHelper";
 import {getMusicTitle} from "./modules/MusicHelper";
 
-const CENTER_SKILL = 80;
-const OTHER_SKILL = [80,60,40,50,40];
-const UNIT_SUM = 142840;
-const EVENT_UP_RATE = 190;
+const CENTER_SKILL = 110;
+//const OTHER_SKILL = [80, 60, 40, 50];
+//const UNIT_SUM = 180000;
+const OTHER_SKILL = [100, 80, 60, 60];
+const UNIT_SUM = 220000;
+const EVENT_UP_RATE = 250;
 
 const LIVE_GAP_TIME_SOLO = 15;
-const LIVE_GAP_TIME_MULTI = 30;
-const DISPLAY_ITEMS = 10;
+const LIVE_GAP_TIME_MULTI = 41;
+const DISPLAY_ITEMS = 25;
 
 //Read metas
 let metaStr = fs.readFileSync("metas.json", "utf8");
@@ -26,7 +28,7 @@ let soloSkillCount = OTHER_SKILL.length + 1;
 
 let soloCenterSkillWeight = CENTER_SKILL / 100;
 let soloAverageSkillWeight = (otherAverage * (soloSkillCount - 1) + CENTER_SKILL) / 100 / soloSkillCount;
-let multiSkillWeight = (1 + CENTER_SKILL / 100) * Math.pow(1 + otherAverage / 500, 4) - 1;
+let multiSkillWeight = CENTER_SKILL / 100 + otherAverage / 100 / 5 * 4;
 
 //console.log(soloCenterSkillWeight);
 //console.log(soloAverageSkillWeight);
@@ -40,6 +42,13 @@ metaObj.forEach(meta => {
         soloScore += i * (index == 5 ? soloCenterSkillWeight : (index >= soloSkillCount ? 0 : soloAverageSkillWeight));
     });
     soloScore *= UNIT_SUM * 4;
+
+    let autoScore = meta.base_score_auto;
+    meta.skill_score_auto.forEach((i, index) => {
+        autoScore += i * (index == 5 ? soloCenterSkillWeight : (index >= soloSkillCount ? 0 : soloAverageSkillWeight));
+    });
+    autoScore *= UNIT_SUM * 2;//Auto has 1/2 score
+
     let multiScore = meta.base_score + meta.fever_score * 0.5;
     meta.skill_score_multi.forEach(i => {
         multiScore += i * multiSkillWeight;
@@ -49,25 +58,27 @@ metaObj.forEach(meta => {
     //Save score
     scores.push({
         music_id: meta.music_id,
+        music_title: getMusicTitle(meta.music_id),
         difficulty: meta.difficulty,
         level: meta.level,
         music_time: meta.music_time,
         solo_score: Math.floor(soloScore),
+        auto_score: Math.floor(autoScore),
         multi_score: Math.floor(multiScore),
         solo_event_pt: eventPoint(soloScore, 0, meta.event_rate, EVENT_UP_RATE),
+        auto_event_pt: eventPoint(autoScore, 0, meta.event_rate, EVENT_UP_RATE),
         multi_event_pt: eventPoint(multiScore, multiScore * 4, meta.event_rate, EVENT_UP_RATE)
     } as MusicScoreResult);
 })
-
-//Write to file
-fs.writeFileSync("scores_out.json", JSON.stringify(scores), {encoding: 'utf8', flag: 'w'});
 
 //Output top score
 displayScores(scores, s => s.solo_score, true, "TOP SOLO SCORE", DISPLAY_ITEMS);
 displayScores(scores, s => s.multi_score, true, "TOP MULTI SCORE", DISPLAY_ITEMS);
 
 displayScores(scores, s => s.solo_event_pt, true, "TOP SOLO EVENT", DISPLAY_ITEMS);
-displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO) * 3600, true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
+//displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO) * 3600, true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
+
+displayScores(scores, s => s.auto_event_pt, true, "TOP AUTO EVENT", DISPLAY_ITEMS);
 
 displayScores(scores, s => s.multi_event_pt, true, "TOP MULTI EVENT", DISPLAY_ITEMS);
 displayScores(scores, b => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME_MULTI) * 3600, true, "TOP MULTI EVENT SPEED", DISPLAY_ITEMS);
@@ -95,3 +106,8 @@ scores.forEach(it => {
     console.log(it + " multi event pt average:" + sum[it] / count[it]);
 })
 console.log()
+
+//Find pareto optimality
+let scores0 = paretoOptimality(scores, it=>it.multi_event_pt,true,"multi_pareto_1st");
+let scores1 = scores.filter(it=>!scores0.includes(it));
+paretoOptimality(scores1, it=>it.multi_event_pt,true,"multi_pareto_2nd");

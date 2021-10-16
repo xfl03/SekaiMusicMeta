@@ -39,6 +39,7 @@ function main() {
             skillEndTime[i] = v + 5
         });
         let skillScoresSolo = [0, 0, 0, 0, 0, 0];
+        let skillScoresAuto = [0, 0, 0, 0, 0, 0];
         let skillScoresMulti = [0, 0, 0, 0, 0, 0];
         let skillNotes = [0, 0, 0, 0, 0, 0];
         //let skillLongMidNotes = [0, 0, 0, 0, 0, 0];
@@ -95,6 +96,7 @@ function main() {
             basicScore += noteWeight;
             if (isSkill) {
                 skillScoresSolo[skillNum - 1] += noteWeight;
+                skillScoresAuto[skillNum - 1] += typeWeight;
                 skillScoresMulti[skillNum - 1] += isFever ? noteWeight * 1.5 : noteWeight;
                 skillNotes[skillNum - 1] ++;
                 /*
@@ -110,6 +112,7 @@ function main() {
         let weight = ScoreHelper.levelWeight(score.play_level) / typeWeightSum;
         basicScore *= weight;
         skillScoresSolo = skillScoresSolo.map(i => i * weight);
+        skillScoresAuto = skillScoresAuto.map(i => i * weight);
         skillScoresMulti = skillScoresMulti.map(i => i * weight);
         feverScore *= weight;
         //Save music meta
@@ -122,7 +125,9 @@ function main() {
             event_rate: getMusicEventRate(score.music_id),
 
             base_score: basicScore,
+            base_score_auto: ScoreHelper.levelWeight(score.play_level),
             skill_score_solo: skillScoresSolo,
+            skill_score_auto: skillScoresAuto,
             skill_score_multi: skillScoresMulti,
             skill_note_count:skillNotes,
             //skill_long_mid_count:skillLongMidNotes,

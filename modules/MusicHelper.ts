@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as mm from "music-metadata";
 import {MusicData, MusicVocalData} from "./MusicDataInterface";
 
-
 //Please change these path before use
 const masterDataPath = "";
 const musicAssetPath = ""
@@ -111,6 +110,7 @@ export const eventMusicRate: Record<number, number> = {
     10: 116,
     11: 106,
     13: 113,
+    15: 108,//drop pop candy, test by @Subway-Sun in 2021.08.03
     18: 114,
     19: 108,
     21: 113,
@@ -144,6 +144,7 @@ export const eventMusicRate: Record<number, number> = {
     69: 114,
     70: 111, //メルティランドナイトメア
     71: 113,
+    72: 104, //ブレス・ユア・ブレス
     73: 112,
     74: 100, //独りんぼエンヴィー
     76: 110,
@@ -156,12 +157,32 @@ export const eventMusicRate: Record<number, number> = {
     85: 116,
     86: 116,
     87: 116, //恋愛裁判 2021.04.02 Tested
+    89: 111, //Color of Drops
+    91: 105, //ドラマツルギー
     92: 110, //乙女解剖
     93: 113,
+    94: 111, //とても痛い痛がりたい
+    96: 123, //from Y to Y
+    101: 119, //RAD DOGS
     103: 113, //ニジイロストーリーズ 2021.04.01 Tested
+    105: 112, //ワンスアポンアドリーム
+    106: 110, //お気に召すまま
     110: 114, //千本桜 2021.04.02 Tested
     115: 118, //アンノウン・マザーグース 2021.04.02 Tested
+    116: 118, //アイディスマイル
+    117: 106, //ODDS＆ENDS
+    118: 112, //＊ハロー、プラネット。
     122: 112, //ポジティブ☆ダンスタイム 2021.04.02 Tested
+    131: 124, //初音ミクの激唱, Tested in 2021.09.10
+    136: 115, //チルドレンレコード
+    141: 107, //群青讃歌
+    149: 111, //カナデトモスソラ
+    150: 109, //トキヲ・ファンカ
+    154: 115, //地球最後の告白を
+    165: 115, //そうだった！！
+    171: 120, //カゲロウデイズ
+    175: 123, //拝啓ドッペルゲンガー
+    176: 118, //マシンガンポエムドール
 }
 
 export function getMusicEventRate(id: number) {

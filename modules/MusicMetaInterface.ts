@@ -7,7 +7,9 @@ export interface MusicMeta {
     event_rate:number,
 
     base_score:number,
+    base_score_auto:number,
     skill_score_solo:number[],
+    skill_score_auto:number[],
     skill_score_multi:number[],
     skill_note_count:number[],
     fever_score:number
@@ -19,7 +21,9 @@ export interface MusicScoreResult {
     level:number,
     music_time:number,
     solo_score:number,
+    auto_score:number,
     multi_score:number
     solo_event_pt:number,
+    auto_event_pt:number,
     multi_event_pt:number
 }
