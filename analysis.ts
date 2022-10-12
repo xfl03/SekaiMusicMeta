@@ -1,21 +1,37 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
-import {displayScores, eventPoint, levelWeight, paretoOptimality,} from "./modules/ScoreHelper";
+import {displayScores, eventPoint, levelWeight, paretoOptimality, eventPointCheerful,} from "./modules/ScoreHelper";
 import {getMusicTitle} from "./modules/MusicHelper";
 
-const CENTER_SKILL = 110;
+let UNIT_SUM = 164382;
+let CENTER_SKILL = 137.3;
+let EVENT_UP_RATE = 221;
+let OTHER_SKILL = [0,0,0,0];
+
 //const OTHER_SKILL = [80, 60, 40, 50];
-//const UNIT_SUM = 180000;
-const OTHER_SKILL = [100, 80, 60, 60];
-const UNIT_SUM = 220000;
-const EVENT_UP_RATE = 250;
+//const UNIT_SUM = 220000;
+
+//Multi Live
+CENTER_SKILL = 95.4;
+UNIT_SUM = 196137;
+OTHER_SKILL = [95.4, 66.5, 66.5, 66.5];
+EVENT_UP_RATE = 265;
+
+//Challenge Live
+UNIT_SUM = 100000;
+CENTER_SKILL = 100;
+OTHER_SKILL = [60,60,60,60];
+
+if(process.argv.length>2) UNIT_SUM = parseFloat(process.argv[2])
+if(process.argv.length>3) CENTER_SKILL = parseFloat(process.argv[3])
+if(process.argv.length>4) EVENT_UP_RATE = parseFloat(process.argv[4])
 
 const LIVE_GAP_TIME_SOLO = 15;
 const LIVE_GAP_TIME_MULTI = 41;
 const DISPLAY_ITEMS = 25;
 
 //Read metas
-let metaStr = fs.readFileSync("metas.json", "utf8");
+let metaStr = fs.readFileSync("music_metas.json", "utf8");
 let metaObj = JSON.parse(metaStr) as MusicMeta[];
 
 //Skill
@@ -23,7 +39,7 @@ let otherSum = 0;
 OTHER_SKILL.forEach(it => {
     otherSum += it
 });
-let otherAverage = otherSum / OTHER_SKILL.length;
+let otherAverage = OTHER_SKILL.length===0?0:(otherSum / OTHER_SKILL.length);
 let soloSkillCount = OTHER_SKILL.length + 1;
 
 let soloCenterSkillWeight = CENTER_SKILL / 100;
@@ -67,15 +83,16 @@ metaObj.forEach(meta => {
         multi_score: Math.floor(multiScore),
         solo_event_pt: eventPoint(soloScore, 0, meta.event_rate, EVENT_UP_RATE),
         auto_event_pt: eventPoint(autoScore, 0, meta.event_rate, EVENT_UP_RATE),
-        multi_event_pt: eventPoint(multiScore, multiScore * 4, meta.event_rate, EVENT_UP_RATE)
+        multi_event_pt: eventPoint(multiScore, multiScore * 4, meta.event_rate, EVENT_UP_RATE),
+        cheer_event_pt: eventPointCheerful(multiScore, multiScore * 4, 1000, meta.event_rate, EVENT_UP_RATE)
     } as MusicScoreResult);
 })
 
 //Output top score
 displayScores(scores, s => s.solo_score, true, "TOP SOLO SCORE", DISPLAY_ITEMS);
-displayScores(scores, s => s.multi_score, true, "TOP MULTI SCORE", DISPLAY_ITEMS);
+//displayScores(scores, s => s.multi_score, true, "TOP MULTI SCORE", DISPLAY_ITEMS);
 
-displayScores(scores, s => s.solo_event_pt, true, "TOP SOLO EVENT", DISPLAY_ITEMS);
+//displayScores(scores, s => s.solo_event_pt, true, "TOP SOLO EVENT", DISPLAY_ITEMS);
 //displayScores(scores, b => b.solo_event_pt / (b.music_time + LIVE_GAP_TIME_SOLO) * 3600, true, "TOP SOLO EVENT SPEED", DISPLAY_ITEMS);
 
 displayScores(scores, s => s.auto_event_pt, true, "TOP AUTO EVENT", DISPLAY_ITEMS);
@@ -91,6 +108,13 @@ let sum = {
     expert: 0,
     master: 0
 };
+let sum_cheer = {
+    easy: 0,
+    normal: 0,
+    hard: 0,
+    expert: 0,
+    master: 0
+};
 let count = {
     easy: 0,
     normal: 0,
@@ -100,10 +124,12 @@ let count = {
 };
 scores.forEach(it => {
     sum[it.difficulty] += it.multi_event_pt;
+    sum_cheer[it.difficulty] += it.cheer_event_pt;
     count[it.difficulty]++;
 });
 ["easy", "normal", "hard", "expert", "master"].forEach(it => {
     console.log(it + " multi event pt average:" + sum[it] / count[it]);
+    console.log(it + " cheer event pt average:" + sum_cheer[it] / count[it]);
 })
 console.log()
 

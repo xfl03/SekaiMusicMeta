@@ -102,3 +102,20 @@ dist
 
 # TernJS port file
 .tern-port
+
+/metas.json
+/multi_pareto_1st.json
+/multi_pareto_2nd.json
+/music_metas.json
+/one_score.json
+/one.json
+/out.py
+/scores_out.json
+/scores.json
+/sekaimusicmeta.iml
+/shuffle.ts
+/sleep.py
+*.csv
+*.msgpack
+*.xlsx
+.DS_Store

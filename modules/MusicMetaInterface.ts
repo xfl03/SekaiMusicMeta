@@ -25,5 +25,6 @@ export interface MusicScoreResult {
     multi_score:number
     solo_event_pt:number,
     auto_event_pt:number,
-    multi_event_pt:number
+    multi_event_pt:number,
+    cheer_event_pt:number
 }

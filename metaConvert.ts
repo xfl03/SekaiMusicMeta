@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as msgpack from '@msgpack/msgpack';
 import {MusicScore} from "./modules/MusicScoreInterface";
 import * as ScoreHelper from './modules/ScoreHelper'
 import {MusicMeta} from "./modules/MusicMetaInterface";
@@ -12,7 +13,7 @@ import {
 
 function main() {
     //Read all scores
-    let scoreStr = fs.readFileSync("scores.json", "utf8");
+    let scoreStr = fs.readFileSync("../WeightCalculator/scores.json", "utf8");
     let scoreObj = JSON.parse(scoreStr) as MusicScore[];
     //Process scores
     let metas: MusicMeta[] = [];
@@ -139,6 +140,7 @@ function main() {
     //Write to file
     fs.writeFileSync("metas.json", JSON.stringify(metas, null, 2), {encoding: 'utf8', flag: 'w'});
     fs.writeFileSync("music_metas.json", JSON.stringify(metas), {encoding: 'utf8', flag: 'w'});
+    fs.writeFileSync("music_metas.msgpack", msgpack.encode(metas), {flag: 'w'});
 }
 
 initAllMusicTime().then(()=>main())

@@ -3,8 +3,8 @@ import * as mm from "music-metadata";
 import {MusicData, MusicVocalData} from "./MusicDataInterface";
 
 //Please change these path before use
-const masterDataPath = "";
-const musicAssetPath = ""
+const masterDataPath = "/Users/xfl03/Projects/pjsk/sekai-master-db-diff/";
+const musicAssetPath = "/Users/xfl03/Projects/pjsk/assets/music/long/"
 
 const musicData = JSON.parse(fs.readFileSync(masterDataPath + "musics.json", "utf8")) as MusicData[];
 const musicVocalData = JSON.parse(fs.readFileSync(masterDataPath + "musicVocals.json", "utf8")) as MusicVocalData[];
@@ -74,6 +74,7 @@ export const musicTime: Record<number, number> = {
     113: 120.9,
     114: 110.5,
     115: 136.7,
+    183: 122.8
 }
 
 const musicTimeCache = new Map<number, number>()
@@ -92,10 +93,11 @@ export async function initAllMusicTime() {
     for(let music of musics) {
         await initMusicTime(music.id);
     }
+    //console.log(musicTimeCache);
 }
 
 export function getMusicTime(id: number) {
-    if (musicTime[id] !== undefined) return musicTime[id];
+    if (musicTime[id] !== undefined && musicTime[id] !== null) return musicTime[id];
     if (musicTimeCache.has(id)) return musicTimeCache.get(id);
 
     console.log(`Cannot read music time:${id}`)
@@ -183,6 +185,7 @@ export const eventMusicRate: Record<number, number> = {
     171: 120, //カゲロウデイズ
     175: 123, //拝啓ドッペルゲンガー
     176: 118, //マシンガンポエムドール
+    186: 130, //初音天地開闢神話
 }
 
 export function getMusicEventRate(id: number) {

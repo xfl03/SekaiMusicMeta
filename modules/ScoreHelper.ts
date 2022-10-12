@@ -37,12 +37,16 @@ export function eventPoint(score: number, other: number, rate: number, unitRate:
     return Math.floor((114 + Math.floor(score / 17500) + Math.min(11, Math.floor(other / 400000))) * rate / 100 * (100 + unitRate) / 100);
 }
 
+export function eventPointCheerful(score: number, other: number, life: number, rate: number, unitRate: number) {
+    return Math.floor((114 + Math.floor(score / 12500) + Math.min(11, Math.floor(other / 400000)) + Math.min(40, Math.floor(life / 25))) * rate / 100 * (100 + unitRate) / 100);
+}
+
 export function displayScores(
     scores: MusicScoreResult[],
     sortItem: (s: MusicScoreResult) => number, sortOrder: boolean,
     displayTitle: string, displayNum: number
 ) {
-    scores.sort((a, b) => sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b));
+    scores.sort((a, b) => sortItem(sortOrder ? b : a) === sortItem(sortOrder ? a : b) ? a.level-b.level :sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b));
 
     console.log(displayTitle);
     for (let i = 0; i < Math.min(displayNum, scores.length); ++i) {
@@ -57,12 +61,16 @@ export function paretoOptimality(
     sortItem: (s: MusicScoreResult) => number, sortOrder: boolean,
     fileName: string): MusicScoreResult[] {
     let scores_t = scores.sort((a, b) =>
-        (a.music_time === b.music_time ? sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b) : a.music_time - b.music_time));
+        (a.music_time === b.music_time ? (sortItem(sortOrder ? b : a) === sortItem(sortOrder ? a : b) ? a.level - b.level :sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b)) : a.music_time - b.music_time));
     let last = scores_t[0];
     let scores0 = scores.filter(it => {
         let result = false;
         if (it.music_time === last.music_time) {
-            result = sortItem(it) >= sortItem(last)
+            if(sortItem(it) === sortItem(last)){
+                result = it.level <= last.level
+            }else {
+                result = sortItem(it) > sortItem(last)
+            }
         } else {
             result = sortItem(it) > sortItem(last)
         }
