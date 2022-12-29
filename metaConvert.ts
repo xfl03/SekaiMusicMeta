@@ -1,14 +1,11 @@
 import * as fs from 'fs';
-import * as msgpack from '@msgpack/msgpack';
 import {MusicScore} from "./modules/MusicScoreInterface";
 import * as ScoreHelper from './modules/ScoreHelper'
 import {MusicMeta} from "./modules/MusicMetaInterface";
 import {
-    eventMusicRate,
     getMusicEventRate,
     getMusicTime, getMusicTitle,
     initAllMusicTime,
-    musicTime
 } from "./modules/MusicHelper";
 
 function main() {
@@ -132,15 +129,16 @@ function main() {
             skill_score_multi: skillScoresMulti,
             skill_note_count:skillNotes,
             //skill_long_mid_count:skillLongMidNotes,
-            fever_score: feverScore
+            fever_score: feverScore,
+            fever_end_time: feverEndTime,
         } as MusicMeta)
         console.log("Processed: " + score.music_id + " " + getMusicTitle(score.music_id) + " " + score.music_difficulty)
     })
 
     //Write to file
-    fs.writeFileSync("metas.json", JSON.stringify(metas, null, 2), {encoding: 'utf8', flag: 'w'});
+    // fs.writeFileSync("metas.json", JSON.stringify(metas, null, 2), {encoding: 'utf8', flag: 'w'});
     fs.writeFileSync("music_metas.json", JSON.stringify(metas), {encoding: 'utf8', flag: 'w'});
-    fs.writeFileSync("music_metas.msgpack", msgpack.encode(metas), {flag: 'w'});
+    // fs.writeFileSync("music_metas.msgpack", msgpack.encode(metas), {flag: 'w'});
 }
 
 initAllMusicTime().then(()=>main())

@@ -1,32 +1,19 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
-import {displayScores, eventPoint, levelWeight, paretoOptimality, eventPointCheerful,} from "./modules/ScoreHelper";
+import {displayScores, eventPoint, paretoOptimality, eventPointCheerful,} from "./modules/ScoreHelper";
 import {getMusicTitle} from "./modules/MusicHelper";
 
-let UNIT_SUM = 164382;
-let CENTER_SKILL = 137.3;
-let EVENT_UP_RATE = 221;
-let OTHER_SKILL = [0,0,0,0];
-
-//const OTHER_SKILL = [80, 60, 40, 50];
-//const UNIT_SUM = 220000;
-
 //Multi Live
-CENTER_SKILL = 95.4;
-UNIT_SUM = 196137;
-OTHER_SKILL = [95.4, 66.5, 66.5, 66.5];
-EVENT_UP_RATE = 265;
+let CENTER_SKILL = 95.4;
+let UNIT_SUM = 196137;
+let OTHER_SKILL = [95.4, 66.5, 66.5, 66.5];
+let EVENT_UP_RATE = 265;
 
-//Challenge Live
-UNIT_SUM = 100000;
-CENTER_SKILL = 100;
-OTHER_SKILL = [60,60,60,60];
+if (process.argv.length > 2) UNIT_SUM = parseFloat(process.argv[2])
+if (process.argv.length > 3) CENTER_SKILL = parseFloat(process.argv[3])
+if (process.argv.length > 4) EVENT_UP_RATE = parseFloat(process.argv[4])
 
-if(process.argv.length>2) UNIT_SUM = parseFloat(process.argv[2])
-if(process.argv.length>3) CENTER_SKILL = parseFloat(process.argv[3])
-if(process.argv.length>4) EVENT_UP_RATE = parseFloat(process.argv[4])
-
-const LIVE_GAP_TIME_SOLO = 15;
+// const LIVE_GAP_TIME_SOLO = 15;
 const LIVE_GAP_TIME_MULTI = 41;
 const DISPLAY_ITEMS = 25;
 
@@ -39,7 +26,7 @@ let otherSum = 0;
 OTHER_SKILL.forEach(it => {
     otherSum += it
 });
-let otherAverage = OTHER_SKILL.length===0?0:(otherSum / OTHER_SKILL.length);
+let otherAverage = OTHER_SKILL.length === 0 ? 0 : (otherSum / OTHER_SKILL.length);
 let soloSkillCount = OTHER_SKILL.length + 1;
 
 let soloCenterSkillWeight = CENTER_SKILL / 100;
@@ -101,21 +88,21 @@ displayScores(scores, s => s.multi_event_pt, true, "TOP MULTI EVENT", DISPLAY_IT
 displayScores(scores, b => b.multi_event_pt / (b.music_time + LIVE_GAP_TIME_MULTI) * 3600, true, "TOP MULTI EVENT SPEED", DISPLAY_ITEMS);
 
 //Output Average Score
-let sum = {
+let sum: Record<string, number> = {
     easy: 0,
     normal: 0,
     hard: 0,
     expert: 0,
     master: 0
 };
-let sum_cheer = {
+let sum_cheer: Record<string, number>  = {
     easy: 0,
     normal: 0,
     hard: 0,
     expert: 0,
     master: 0
 };
-let count = {
+let count: Record<string, number>  = {
     easy: 0,
     normal: 0,
     hard: 0,
@@ -134,6 +121,6 @@ scores.forEach(it => {
 console.log()
 
 //Find pareto optimality
-let scores0 = paretoOptimality(scores, it=>it.multi_event_pt,true,"multi_pareto_1st");
-let scores1 = scores.filter(it=>!scores0.includes(it));
-paretoOptimality(scores1, it=>it.multi_event_pt,true,"multi_pareto_2nd");
+let scores0 = paretoOptimality(scores, it => it.multi_event_pt, true, "multi_pareto_1st");
+let scores1 = scores.filter(it => !scores0.includes(it));
+paretoOptimality(scores1, it => it.multi_event_pt, true, "multi_pareto_2nd");

@@ -84,6 +84,7 @@ export async function initMusicTime(id:number) {
     let vocal = musicVocalData.filter(it => it.musicId === id)[0];
 
     let meta = await mm.parseFile(`${musicAssetPath}/${vocal.assetbundleName}_rip/${vocal.assetbundleName}.mp3`);
+    //@ts-ignore
     let time = Math.round((meta.format.duration - music.fillerSec) * 10) / 10;
     musicTimeCache.set(id, time);
 }
@@ -192,5 +193,6 @@ export function getMusicEventRate(id: number) {
     if (eventMusicRate[id] !== undefined) return eventMusicRate[id];
 
     let time = getMusicTime(id);
+    //@ts-ignore
     return Math.floor(time / 3.6) + 80;
 }

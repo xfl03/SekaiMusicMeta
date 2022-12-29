@@ -12,7 +12,8 @@ export interface MusicMeta {
     skill_score_auto:number[],
     skill_score_multi:number[],
     skill_note_count:number[],
-    fever_score:number
+    fever_score:number,
+    fever_end_time:number,
 }
 
 export interface MusicScoreResult {
