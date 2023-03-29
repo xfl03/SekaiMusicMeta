@@ -35,3 +35,10 @@ export interface MusicVocalData {
     characters: CharacterData[];
     assetbundleName: string;
 }
+
+export interface MusicDifficultyData {
+    musicId: number,
+    musicDifficulty: string,
+    playLevel: number,
+    totalNoteCount: number,
+}

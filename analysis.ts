@@ -1,13 +1,17 @@
 import * as fs from 'fs';
 import {MusicMeta, MusicScoreResult} from "./modules/MusicMetaInterface";
 import {displayScores, eventPoint, paretoOptimality, eventPointCheerful,} from "./modules/ScoreHelper";
-import {getMusicTitle} from "./modules/MusicHelper";
+import {getMusicDiff, getMusicTitle} from "./modules/MusicHelper";
 
 //Multi Live
 let CENTER_SKILL = 95.4;
 let UNIT_SUM = 196137;
 let OTHER_SKILL = [95.4, 66.5, 66.5, 66.5];
 let EVENT_UP_RATE = 265;
+
+//Challenge Live
+// UNIT_SUM = 203286;
+// OTHER_SKILL = [95.4, 95.4, 66.5, 66.5];
 
 if (process.argv.length > 2) UNIT_SUM = parseFloat(process.argv[2])
 if (process.argv.length > 3) CENTER_SKILL = parseFloat(process.argv[3])
@@ -50,7 +54,7 @@ metaObj.forEach(meta => {
     meta.skill_score_auto.forEach((i, index) => {
         autoScore += i * (index == 5 ? soloCenterSkillWeight : (index >= soloSkillCount ? 0 : soloAverageSkillWeight));
     });
-    autoScore *= UNIT_SUM * 2;//Auto has 1/2 score
+    autoScore *= UNIT_SUM * 4;//Auto has 70% score,this will be calculated in music meta generate
 
     let multiScore = meta.base_score + meta.fever_score * 0.5;
     meta.skill_score_multi.forEach(i => {
@@ -63,7 +67,7 @@ metaObj.forEach(meta => {
         music_id: meta.music_id,
         music_title: getMusicTitle(meta.music_id),
         difficulty: meta.difficulty,
-        level: meta.level,
+        level: getMusicDiff(meta.music_id, meta.difficulty),
         music_time: meta.music_time,
         solo_score: Math.floor(soloScore),
         auto_score: Math.floor(autoScore),
@@ -121,6 +125,7 @@ scores.forEach(it => {
 console.log()
 
 //Find pareto optimality
+scores = scores.filter(it=>it.level<=31);//Remove too hard music
 let scores0 = paretoOptimality(scores, it => it.multi_event_pt, true, "multi_pareto_1st");
 let scores1 = scores.filter(it => !scores0.includes(it));
 paretoOptimality(scores1, it => it.multi_event_pt, true, "multi_pareto_2nd");

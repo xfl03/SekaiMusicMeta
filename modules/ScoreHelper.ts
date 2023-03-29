@@ -1,5 +1,5 @@
 import { MusicScoreResult } from "./MusicMetaInterface";
-import { getMusicTime, getMusicTitle } from "./MusicHelper";
+import { getMusicTitle } from "./MusicHelper";
 import * as fs from 'fs';
 
 export const noteWeight: Record<string, number> = {
@@ -46,12 +46,12 @@ export function displayScores(
     sortItem: (s: MusicScoreResult) => number, sortOrder: boolean,
     displayTitle: string, displayNum: number
 ) {
-    scores.sort((a, b) => sortItem(sortOrder ? b : a) === sortItem(sortOrder ? a : b) ? a.level-b.level :sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b));
+    scores.sort((a, b) => sortItem(sortOrder ? b : a) === sortItem(sortOrder ? a : b) ? (a.music_time === b.music_time ? a.level-b.level : a.music_time - b.music_time) :sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b));
 
     console.log(displayTitle);
     for (let i = 0; i < Math.min(displayNum, scores.length); ++i) {
         let score = scores[i];
-        console.log("#" + (i + 1) + " " + getMusicTitle(score.music_id) + " " + score.difficulty + " Level:" + score.level + " " + score.music_time + " " + sortItem(score) + " " + score.multi_event_pt);
+        console.log("#" + (i + 1) + " " + score.music_id + " " + getMusicTitle(score.music_id) + " " + score.difficulty + " Level:" + score.level + " " + score.music_time + " " + sortItem(score) + " " + score.multi_event_pt);
     }
     console.log();
 }
@@ -64,7 +64,7 @@ export function paretoOptimality(
         (a.music_time === b.music_time ? (sortItem(sortOrder ? b : a) === sortItem(sortOrder ? a : b) ? a.level - b.level :sortItem(sortOrder ? b : a) - sortItem(sortOrder ? a : b)) : a.music_time - b.music_time));
     let last = scores_t[0];
     let scores0 = scores.filter(it => {
-        let result = false;
+        let result: boolean;
         if (it.music_time === last.music_time) {
             if(sortItem(it) === sortItem(last)){
                 result = it.level <= last.level

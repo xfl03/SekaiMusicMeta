@@ -1,12 +1,13 @@
 import * as fs from "fs";
 import * as mm from "music-metadata";
-import {MusicData, MusicVocalData} from "./MusicDataInterface";
+import { MusicData, MusicVocalData, MusicDifficultyData } from "./MusicDataInterface";
 
 //Please change these path before use
 const masterDataPath = "/Users/xfl03/Projects/pjsk/sekai-master-db-diff/";
 const musicAssetPath = "/Users/xfl03/Projects/pjsk/assets/music/long/"
 
 const musicData = JSON.parse(fs.readFileSync(masterDataPath + "musics.json", "utf8")) as MusicData[];
+const musicDiffData = JSON.parse(fs.readFileSync(masterDataPath + "musicDifficulties.json", "utf8")) as MusicDifficultyData[];
 const musicVocalData = JSON.parse(fs.readFileSync(masterDataPath + "musicVocals.json", "utf8")) as MusicVocalData[];
 
 function getMusicData(id: number) {
@@ -79,7 +80,7 @@ export const musicTime: Record<number, number> = {
 
 const musicTimeCache = new Map<number, number>()
 
-export async function initMusicTime(id:number) {
+export async function initMusicTime(id: number) {
     let music = getMusicData(id);
     let vocal = musicVocalData.filter(it => it.musicId === id)[0];
 
@@ -90,8 +91,8 @@ export async function initMusicTime(id:number) {
 }
 
 export async function initAllMusicTime() {
-    let musics = musicData.filter(it=>musicTime[it.id]===undefined);
-    for(let music of musics) {
+    let musics = musicData.filter(it => musicTime[it.id] === undefined);
+    for (let music of musics) {
         await initMusicTime(music.id);
     }
     //console.log(musicTimeCache);
@@ -195,4 +196,9 @@ export function getMusicEventRate(id: number) {
     let time = getMusicTime(id);
     //@ts-ignore
     return Math.floor(time / 3.6) + 80;
+}
+
+export function getMusicDiff(musicId: number, diff0: string) {
+    const diff = musicDiffData.find(it => it.musicId === musicId && it.musicDifficulty === diff0);
+    return diff!.playLevel;
 }
